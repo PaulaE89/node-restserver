@@ -1,8 +1,19 @@
 //process objeto global dond eesta corriendo la aplicacion
-
-
 //========
 // puerto
 //====
 
-process.env.PORT= process.env.PORT|| 3000
+process.env.PORT = process.env.PORT || 3000
+//Entorno
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+// Bases de datos
+
+let urlDB;
+if (process.env.NODE_ENV === 'dev') {
+    urlDB = 'mongodb://localhost:27017/cafe';
+} else {
+    urlDB = 'mongodb+srv://paeb08:P1a9u8l9a@cluster0.uoet3.mongodb.net/cafe';
+}
+
+process.env.URLDB = urlDB;
+
