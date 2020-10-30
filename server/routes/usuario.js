@@ -2,17 +2,28 @@ const express = require('express');
 const app = express();
 const _ = require('underscore')
 const Usuario = require('../models/usuario');
+
+const { verficaToken, verificaAdminRole } = require('../middlewares/autenticacion')
 const bcrypt = require('bcrypt');
 
 //--------
 const bodyParser = require('body-parser');
-const usuario = require('../models/usuario');
+// const usuario = require('../models/usuario');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //--------
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', verficaToken, (req, res) => {
+
+    // return res.json({
+    //     usuario:req.usuario,
+    //     nombre: req.usuario.nombre,
+    //     email:req.usuario.email,
+    // })
+
+
     let desde = req.query.desde || 0;
     desde = Number(desde);
     let limite = req.query.limite || 5;
@@ -37,7 +48,7 @@ app.get('/usuario', (req, res) => {
         })
 })
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verficaToken, verificaAdminRole], (req, res) => {
     let body = req.body;
     // if(body.nombre===undefined){
     //     res.status(400).json({
@@ -70,7 +81,7 @@ app.post('/usuario', (req, res) => {
     });
 });
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id', [verficaToken, verificaAdminRole], function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
@@ -87,7 +98,7 @@ app.put('/usuario/:id', function (req, res) {
     })
 })
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verficaToken, verificaAdminRole], (req, res) => {
     let id = req.params.id;
     let cambiaEstado = {
         estado: false
