@@ -13,4 +13,6 @@ let categoriaSchema= new Schema({
     }
 });
 
+//export default model('categoria', categoriaSchema)
+
 module.exports=mongoose.model('categoria', categoriaSchema);
